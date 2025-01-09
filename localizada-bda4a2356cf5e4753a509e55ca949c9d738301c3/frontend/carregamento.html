@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Carregamento</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+  <style>
+  /* Definindo a paleta de cores */
+:root {
+  --primary-color: #008080; /* Verde azulado */
+  --secondary-color: #f4f6f9;
+  --button-bg: #66bb6a;
+  --button-hover-bg: #388e3c;
+  --button-active-bg: #2c6e2f;
+  --text-color: #333;
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  --border-radius: 8px;
+  --font-family: 'Roboto', sans-serif;
+  --spacing: 16px;
+  --heading-font-size: 2rem;
+  --button-font-size: 1rem;
+  --button-padding: 14px;
+}
+
+
+/* Resetando estilos */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-family);
+  background-color: #e8f5e9; /* Cor de fundo verde suave */
+  color: var(--text-color);
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  flex-direction: column;
+  text-align: center;
+}
+
+h1 {
+  font-size: var(--heading-font-size);
+  color: var(--primary-color);
+  font-weight: 700;
+  margin-bottom: 32px;
+  letter-spacing: 1px;
+}
+
+#carretas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  max-width: 1200px;
+  width: 100%;
+}
+
+.carreta {
+  background-color: white;
+  padding: var(--spacing);
+  border-radius: var(--border-radius);
+  box-shadow: 0 6px 12px var(--shadow-color);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.carreta:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 24px var(--shadow-color);
+}
+
+.carreta h2 {
+  font-size: 1.6rem;
+  color: var(--primary-color);
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+/* Estilo para os botões em linha */
+.buttons-container {
+  display: flex;
+  /* Updated line to display buttons side by side */
+  flex-direction: row; /* This line makes the buttons appear horizontally */
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+button {
+  background-color: var(--button-bg);
+  color: white;
+  border: none;
+  padding: var(--button-padding);
+  font-size: var(--button-font-size);
+  cursor: pointer;
+  border-radius: var(--border-radius);
+  width: 48%; /* Ajusta para ficar lado a lado com o outro */
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  font-weight: 600;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+button:hover {
+  background-color: var(--button-hover-bg);
+  transform: scale(1.05);
+}
+
+button:active {
+  background-color: var(--button-active-bg);
+}
+
+.clear-button {
+  background-color: transparent; /* Fundo transparente para a lixeira */
+  width: 48%;
+  font-size: 1.2rem;
+  color: red; /* Cor do ícone de lixeira */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 12px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+}
+
+.clear-button:hover {
+  transform: scale(1.05);
+}
+
+.clear-button:active {
+  color: #c62828;
+}
+
+.clear-button i {
+  font-size: 1.5rem; /* Tamanho do ícone */
+}
+
+.historico {
+  margin-top: 16px;
+  font-size: 0.9rem;
+  color: #666;
+  background-color: #f8f8f8;
+  padding: 12px;
+  border-radius: var(--border-radius);
+  max-height: 160px;
+  overflow-y: auto;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 8px var(--shadow-color);
+}
+
+.historico p {
+  margin: 8px 0;
+  line-height: 1.6;
+}
+
+.historico p strong {
+  color: var(--primary-color);
+}
+
+/* Estilos para telas pequenas */
+@media (max-width: 768px) {
+  body {
+    padding: 20px;
+  }
+
+  .carreta {
+    padding: 16px;
+  }
+
+  h1 {
+    font-size: 1.8rem;
+  }
+
+  button {
+    font-size: 0.9rem;
+    width: 100%; /* Faz com que os botões ocupem a largura total em telas pequenas */
+  }
+
+  .buttons-container {
+   
+    gap: 8px;
+  }
+
+  .clear-button {
+    width: 10%; /* Lixeira também ocupa a largura total em telas pequenas */
+    margin-left: 28px;
+    box-shadow: none;
+  }
+}
+  </style>
+</head>
+<body>
+
+  <h1>Carregamento</h1>
+  <div id="carretas"></div>
+
+  <script>
+    const carretas = [1401, 1402, 1418, 1417, 156009];
+    const ws = new WebSocket("https://localizada-app.onrender.com");
+
+    ws.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      if (data.type === "init") {
+        carretas.forEach((carreta) => {
+          document.getElementById("carretas").innerHTML += `
+            <div id="carreta-${carreta}" class="carreta">
+              <h2>Carreta ${carreta}</h2>
+              <div class="buttons-container">
+                <button onclick="updateStatus(${carreta}, 'Entrada')">
+                  <i class="bi bi-arrow-right-circle"></i> Entrada
+                </button>
+                <button onclick="updateStatus(${carreta}, 'Saída')">
+                  <i class="bi bi-arrow-left-circle"></i> Saída
+                </button>
+                <button class="clear-button" onclick="clearHistory(${carreta})">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </div>
+              <div id="historico-${carreta}" class="historico"></div>
+            </div>
+          `;
+
+          // Carrega o histórico do localStorage para cada carreta
+          const currentHistory = JSON.parse(localStorage.getItem("historicoCarregamento") || "{}");
+          if (currentHistory[carreta]) {
+            const historico = document.getElementById(`historico-${carreta}`);
+            currentHistory[carreta].forEach(entry => {
+              historico.innerHTML += `<p><strong>${entry.action}:</strong> ${entry.time}</p>`;
+            });
+          }
+        });
+      }
+    };
+
+    function updateStatus(carreta, type) {
+      const status = type === "Entrada" ? "Aguardando Carregamento" : "Em Percurso para o CAMPO";
+      const time = new Date().toLocaleTimeString();
+      const action = { action: type, time: time };
+
+      // Envia a atualização ao servidor
+      ws.send(JSON.stringify({
+        type: "update", 
+        carreta, 
+        status, 
+        action, 
+        area: "carregamento" 
+      }));
+
+      // Atualiza o histórico local na página
+      const historico = document.getElementById(`historico-${carreta}`);
+      historico.innerHTML += `<p><strong>${action.action}:</strong> ${action.time}</p>`;
+
+      // Atualiza o histórico no LocalStorage apenas para esta página (carregamento)
+      const currentHistory = JSON.parse(localStorage.getItem("historicoCarregamento") || "{}");
+      if (!currentHistory[carreta]) currentHistory[carreta] = [];
+      currentHistory[carreta].push(action);
+      localStorage.setItem("historicoCarregamento", JSON.stringify(currentHistory));
+    }
+
+    function clearHistory(carreta) {
+      if (confirm("Você tem certeza que deseja limpar o histórico?")) {
+        // Limpa o histórico no LocalStorage
+        const currentHistory = JSON.parse(localStorage.getItem("historicoCarregamento") || "{}");
+        currentHistory[carreta] = []; // Limpa o histórico da carreta
+        localStorage.setItem("historicoCarregamento", JSON.stringify(currentHistory));
+
+        // Atualiza o histórico na página
+        const historico = document.getElementById(`historico-${carreta}`);
+        historico.innerHTML = ""; // Limpa a exibição de histórico
+
+        // Envia a limpeza ao servidor
+        ws.send(JSON.stringify({
+          type: "clearHistory",
+          carreta,
+          area: "carregamento"
+        }));
+      }
+    }
+  </script>
+
+</body>
+</html>

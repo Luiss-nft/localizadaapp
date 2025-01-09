@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, content="width=device-width, initial-scale=1.0">
+  <title>Status</title>
+  <style>
+    /* Reset CSS */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f9fafa;
+      color: #fff; /* Mudança para fonte branca */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 0;
+    }
+
+    /* Barra de navegação */
+    nav {
+      width: 100%;
+      background-color: #0077b6;
+      padding: 15px;
+      display: flex;
+      justify-content: center;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    nav h1 {
+      color: #fff;
+      font-size: 1.8rem;
+    }
+
+    /* Container principal */
+    main {
+      padding: 20px;
+      width: 100%;
+      max-width: 1200px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    #statuses {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      width: 100%;
+    }
+
+    .status-box {
+      background: #fff;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .status-box:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .status-box h2 {
+      font-size: 1.2rem;
+      color: #0077b6;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+
+    .status {
+      font-size: 1rem;
+      font-weight: bold;
+      padding: 10px 15px;
+      border-radius: 8px;
+      text-align: center;
+      width: 100%;
+      max-width: 200px;
+    }
+
+    /* Variáveis CSS para cores dos status */
+    :root {
+      --color-AguardandoCarregamento: #ffcc00; /* Amarelo */
+      --color-EmPercursoCampo: #079f25; /* Azul */
+      --color-EmPercursoPoco: #cc0000; /* Azul claro diferente */
+      --color-AguardandoDescarregamento: #ff6600; /* Laranja */
+      --color-CaminhoparaPoco: #28a745; /* Verde */
+      --color-SemStatus: #0389ff; /* Cinza */
+      --color-Concluido: #17a2b8; /* Ciano */
+      --color-Cancelado: #dc3545; /* Vermelho */
+    }
+
+    /* Cores dos status */
+    .AguardandoCarregamento { background-color: var(--color-AguardandoCarregamento); }
+    .EmPercursoCampo { background-color: var(--color-EmPercursoCampo); }
+    .EmPercursoPoco { background-color: var(--color-EmPercursoPoco); }
+    .AguardandoDescarregamento { background-color: var(--color-AguardandoDescarregamento); }
+    .CaminhoparaPoco { background-color: var(--color-CaminhoparaPoco); }
+    .SemStatus { background-color: var(--color-SemStatus); }
+    .Concluido { background-color: var(--color-Concluido); }
+    .Cancelado { background-color: var(--color-Cancelado); }
+
+    /* Responsividade */
+    @media (max-width: 768px) {
+      nav h1 {
+        font-size: 1.4rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <h1>Status das Carretas - poopis</h1> <!-- Adicionada a palavra "poopis" -->
+  </nav>
+
+  <main>
+    <div id="statuses"></div>
+  </main>
+
+  <script>
+    const ws = new WebSocket("https://localizada-app.onrender.com");
+
+    ws.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      console.log("Dados recebidos:", data);
+
+      if (data.type === "init") {
+        Object.keys(data.statuses).forEach(carreta => {
+          updateStatus(carreta, data.statuses[carreta]);
+        });
+      } else if (data.type === "clearHistory") {
+        Object.keys(data.statuses).forEach(carreta => {
+          updateStatus(carreta, 'Sem status');
+        });
+      } else {
+        updateStatus(data.carreta, data.status);
+      }
+    };
+
+    function updateStatus(carreta, status) {
+      const statusText = status || 'Sem status';
+      console.log("Atualizando status para carreta:", carreta, "Status:", statusText);
+
+      const statusClass = getStatusClass(statusText);
+      console.log("Classe CSS aplicada:", statusClass);
+
+      if (!document.getElementById(`carreta-${carreta}`)) {
+        document.getElementById("statuses").innerHTML += ` 
+          <div id="carreta-${carreta}" class="status-box">
+            <h2>Carreta ${carreta}</h2>
+            <div id="status-${carreta}" class="status ${statusClass}">
+              ${statusText}
+            </div>
+          </div>
+        `;
+      } else {
+        const carretaElement = document.getElementById(`status-${carreta}`);
+        carretaElement.innerText = statusText;
+        carretaElement.className = `status ${statusClass}`;
+      }
+    }
+
+    function getStatusClass(status) {
+      switch (status) {
+        case 'Aguardando Carregamento':
+          return 'AguardandoCarregamento';
+        case 'Em Percurso para o campo':
+        case 'Em Percurso para o CAMPO':
+          return 'EmPercursoCampo';
+        case 'Em Percurso para o POÇO':
+          return 'EmPercursoPoco';
+        case 'Aguardando Descarregamento':
+          return 'AguardandoDescarregamento';
+        case 'Caminho para Poço':
+          return 'CaminhoparaPoco';
+        case 'Sem status':
+          return 'SemStatus';
+        case 'Concluído':
+          return 'Concluido';
+        case 'Cancelado':
+          return 'Cancelado';
+        default:
+          console.warn(`Status desconhecido: ${status}`);
+          return 'SemStatus';
+      }
+    }
+
+    // Atualiza as cores quando o usuário escolhe uma nova cor
+    document.querySelectorAll('input[type="color"]').forEach(input => {
+      input.addEventListener('input', (event) => {
+        const color = event.target.value;
+        const statusClass = event.target.id.replace('color-', '');
+        document.documentElement.style.setProperty(`--color-${statusClass}`, color);
+      });
+    });
+
+    ws.onclose = () => {
+      console.warn("Conexão WebSocket fechada.");
+    };
+  </script>
+</body>
+</html>

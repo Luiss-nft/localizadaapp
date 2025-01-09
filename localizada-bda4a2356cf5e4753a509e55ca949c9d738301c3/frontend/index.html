@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <!-- Required meta tags-->
+  <meta charset="utf-8">
+  <meta name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <!-- Color theme for statusbar (Android only) -->
+  <meta name="theme-color" content="#2196f3">
+  <!-- Your app title -->
+  <title>Inicio</title>
+  <!-- Path to Framework7 Library Bundle CSS -->
+  <link rel="stylesheet" href="lib/framework7-bundle.min.css">
+  <!-- CSS Personalizado para Menu -->
+  <link rel="stylesheet" href="css/index.css">
+  <!-- Ícones Material Design via CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font/css/materialdesignicons.min.css">
+  <link rel="icon" href="img/logo-png(1).png" />
+</head>
+
+<body>
+  <!-- Novo Cabeçalho -->
+  <header><img src="images/icone.png" style="width: 90px;" alt=""></header>
+
+  <!-- Menu Grid -->
+  <div class="menu-grid" id="menuGrid">
+      <div class="menu-item carregamento">
+          <a href="carregamento.html">
+              <div style="position: relative;">
+                <i class="mdi mdi-arrow-down"style="color: green; position: absolute; top: -25px; font-size: 25px; margin-left: 40px;"title="Descarregamento"></i>
+                  <i class="mdi mdi-tanker-truck" style="color: #05c73f; font-size: 40px; position: relative; top: 10px;" title="Caminhão Tanque"></i>
+              </div>
+              <p>Carregamento</p>
+          </a>
+      </div>
+      <div class="menu-item descarregamento">
+          <a href="descarregamento.html">
+              <div style="position: relative;">
+                  
+                  <i class="mdi mdi-arrow-up" style="color: red; position: absolute; top: -25px; font-size: 25px; margin-left: 40px;" title="Carregamento"></i>
+                  <i class="mdi mdi-tanker-truck" style="color: #05c73f; font-size: 40px; position: relative; top: 10px;" title="Caminhão Tanque"></i>
+              </div>
+              <p>Descarregamento</p>
+          </a>
+      </div>
+      <div class="menu-item adubo">
+          <a href="adubo.html">
+              <i class="mdi mdi-seed" title="Adubo"></i>
+              <p>Adubo</p>
+          </a>
+      </div>
+      
+          
+      
+      <div class="menu-item calculos">
+          <a href="calculadora.html">
+              <i class="mdi mdi-calculator" title="Calculadora"></i>
+              <p>Calculadora</p>
+          </a>
+      </div>
+      <div class="menu-item calculos">
+        <a href="tratores.html">
+            <i class="mdi mdi-tractor" title="Tratores"></i>
+            <p>Tratores</p>
+        </a>
+    </div>
+      
+      <div class="menu-item controle";>
+          <a href="status.html">
+              <img src="images/carreta ico.png" alt="Carretas" title="Carretas">
+              <p>Carretas</p>
+          </a>
+      </div>
+
+   
+      
+      
+      <!-- Item de Viagens, centralizado e sem animação -->
+      <div class="menu-item viagens" style="margin-right: -240px; border: none;background-color: #e0f7fa; box-shadow: none;">
+          <div class="viagens-content">
+              <i class="mdi mdi-map-marker-distance" title="Viagens"></i>
+              <p>Viagens</p>
+              <div class="counter" id="viagensCounter" ">0</div>
+          </div>
+        </div>
+
+  
+
+
+
+
+
+
+  </div>
+
+  <!-- Botão para incrementar viagens -->
+  <div class="incrementar-btn-container">
+      <button id="incrementarViagemBtn">Adicionar Viagem</button>
+  </div>
+
+  <!-- Botão Finalizar -->
+  <div class="finalizar-btn-container">
+      <button id="finalizarBtn" style="height: 30px;">Finalizar</button>
+  </div>
+
+  <!-- Modal de Confirmação -->
+  <div id="modal" class="modal">
+      <div class="modal-content">
+          <p>Deseja realmente finalizar e zerar o contador de viagens?</p>
+          <div class="modal-buttons">
+              <button id="simBtn">Sim</button>
+              <button id="naoBtn">Não</button>
+          </div>
+      </div>
+  </div>
+
+  <!-- Script -->
+  <script>
+      // Atualiza o contador de viagens dinamicamente
+      function updateViagensCounter(newCount) {
+          const counterElement = document.getElementById('viagensCounter');
+          if (counterElement) {
+              counterElement.textContent = newCount;
+          }
+      }
+
+      // Inicializar o contador com o valor salvo no localStorage
+      const viagensInicial = parseInt(localStorage.getItem('contadorViagens')) || 0;
+      updateViagensCounter(viagensInicial);
+
+      // Incrementar contador ao clicar no botão "Adicionar Viagem"
+      document.getElementById('incrementarViagemBtn').addEventListener('click', () => {
+          let viagensCount = parseInt(localStorage.getItem('contadorViagens')) || 0;
+          viagensCount += 1;
+          localStorage.setItem('contadorViagens', viagensCount);
+          updateViagensCounter(viagensCount);
+      });
+
+      // Exibir o modal ao clicar no botão "Finalizar"
+      document.getElementById('finalizarBtn').addEventListener('click', () => {
+          const modal = document.getElementById('modal');
+          if (modal) {
+              modal.style.display = 'flex'; // Exibir o modal
+          }
+      });
+
+      // Fechar o modal ao clicar no botão "Não"
+      document.getElementById('naoBtn').addEventListener('click', () => {
+          const modal = document.getElementById('modal');
+          if (modal) {
+              modal.style.display = 'none'; // Esconder o modal
+          }
+      });
+
+      // Finalizar e zerar o contador ao clicar no botão "Sim"
+      document.getElementById('simBtn').addEventListener('click', () => {
+          // Zerar o contador no localStorage
+          localStorage.setItem('contadorViagens', '0');
+          // Atualizar o contador na interface
+          updateViagensCounter(0);
+
+          // Fechar o modal
+          const modal = document.getElementById('modal');
+          if (modal) {
+              modal.style.display = 'none'; // Esconder o modal
+          }
+      });
+
+      // Atualizar contador ao detectar mudanças no localStorage
+      window.addEventListener('storage', (event) => {
+          if (event.key === 'contadorViagens') {
+              updateViagensCounter(parseInt(event.newValue));
+          }
+      });
+  </script>
+
+  <style>
+      /* Estilo do menu */
+      .menu-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr); /* 3 colunas */
+          grid-template-rows: repeat(2, auto); /* 2 linhas */
+          gap: 10px;
+          padding: 25px;
+          align-items: center;
+          justify-items: center;
+          margin-top: -20px;
+      }
+
+      .menu-item {
+          text-align: center;
+          border: 1px solid #ddd;
+          border-radius: 10px;
+          padding: 10px;
+          background-color: #f9f9f9;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+          transition: transform 0.2s;
+      }
+
+      /* Remover animação de hover */
+     
+
+      .menu-item i {
+          font-size: 36px;
+          color: #05c73f;
+          vertical-align: middle; /* Alinha verticalmente o ícone */
+      }
+
+      /* Estilo específico para o ícone de O.S */
+      .os-icon {
+          font-size: 36px; /* Tamanho do ícone */
+          color: #ff9800; /* Cor do ícone */
+          height: 70px; /* Aumenta a altura do ícone */
+          display: inline-block; /* Para aplicar a altura corretamente */
+          margin-bottom: 30px; /* Espaço abaixo do ícone (30px) */
+          vertical-align: middle; /* Alinha verticalmente o ícone */
+      }
+ 
+
+.menu-item i {
+  font-size: px;
+  color: #05c73f;
+  margin-bottom: 5px; /* Espaço abaixo do ícone */
+  
+}
+.icon-ajustes {
+  width: 40px; /* Tamanho fixo para o ícone de ajustes */
+  height: 40px; /* Tamanho fixo para o ícone de ajustes */
+  font-size: 40px; /* Tamanho do ícone (ajuste conforme necessário) */
+  display: inline-block; /* Para aplicar as dimensões corretamente */
+  line-height: 40px; /* Alinha verticalmente o ícone */
+  text-align: center; /* Centraliza o ícone dentro do espaço */
+}
+
+
+
+      .menu-item p {
+          margin: 10px 0 10px;
+          font-size: 10px;
+          font-weight: bold;
+      }
+
+      .counter {
+          font-size: 25px;
+          color: #fff;
+          background-color: #ff5420;
+          border-radius: 12px;
+          padding: 5px 10px;
+          display: inline-block;
+          margin-top: 4px;
+      }
+
+      /* Estilo do botão para incrementar viagens */
+      .incrementar-btn-container {
+          text-align: center;
+          margin-top: 20px;
+      }
+
+      #incrementarViagemBtn {
+          padding: 10px 20px;
+          font-size: 16px;
+          background-color: #2196f3;
+          color: white;
+          border: none;
+          border-radius: 5px;
+          cursor: pointer;
+          display: none;
+      }
+
+      #incrementarViagemBtn:hover {
+          background-color: #1976d2;
+      }
+
+      /* Estilo do botão finalizar */
+      .finalizar-btn-container {
+          text-align: center;
+          margin-top: 20px;
+      }
+
+      #finalizarBtn {
+         width: 80px;
+
+          font-size: 16px;
+          background-color: #069118;
+          color: white;
+          border: none;
+          border-radius: 10px;
+          cursor: pointer;
+          position: absolute;
+          margin-left: -40px;
+          margin-top: -60px;
+      }
+
+      #finalizarBtn:hover {
+          background-color: #e64a19;
+      }
+
+      /* Estilo da modal de confirmação */
+      .modal {
+          display: none; /* Inicialmente escondida */
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background-color: rgba(0, 0, 0, 0.5);
+          align-items: center;
+          justify-content: center;
+      }
+
+      .modal-content {
+          background-color: white;
+          padding: 20px;
+          border-radius: 10px;
+          text-align: center;
+          width: 300px;
+      }
+
+      .modal-buttons {
+          margin-top: 20px;
+          display: flex;
+          justify-content: space-between;
+      }
+
+      .modal-buttons button {
+          padding: 10px 20px;
+          font-size: 16px;
+          border: none;
+          border-radius: 5px;
+          cursor: pointer;
+          width: 45%; /* Largura para distribuir igualmente os botões */
+      }
+
+      #simBtn {
+          background-color: #4CAF50; /* Verde */
+          color: white;
+      }
+
+      #simBtn:hover {
+          background-color: #388E3C;
+      }
+
+      #naoBtn {
+          background-color: #f44336; /* Vermelho */
+          color: white;
+      }
+
+      #naoBtn:hover {
+          background-color: #d32f2f;
+      }
+
+      /* Remove o sublinhado roxo dos links */
+      a {
+          text-decoration: none; /* Remove o sublinhado */
+      }
+
+
+
+
+   </style>
+
+   
+</body>
+
+</html>
